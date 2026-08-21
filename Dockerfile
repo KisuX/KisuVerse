@@ -12,4 +12,8 @@ WORKDIR /app
 COPY --from=build /app .
 
 ENV ASPNETCORE_ENVIRONMENT=Production
+# Disables the config-file watcher: avoids a crash on containers with a low
+# inotify instance limit (common on small hosting plans), and isn't needed
+# since production config comes from environment variables, not file edits.
+ENV DOTNET_hostBuilder__reloadConfigOnChange=false
 ENTRYPOINT ["dotnet", "KisuVerse.Api.dll"]
