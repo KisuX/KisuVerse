@@ -7,6 +7,7 @@
   },
   "AllowedHosts": "*",
   "AdminEmails": [ "your-admin-email@example.com" ],
+  "AllowedOrigins": [ "http://localhost:5173", "https://your-username.github.io" ],
   "ConnectionStrings": {
     "DefaultConnection": "Host=localhost;Port=5432;Database=KisuVerseDb;Username=postgres;Password=YOUR_DB_PASSWORD"
   },

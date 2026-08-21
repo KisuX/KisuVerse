@@ -17,8 +17,15 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using KisuVerse.Api.Validators;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrEmpty(port))
+{
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
 
 builder.Services.AddAutoMapper(
     cfg => { },
@@ -87,11 +94,14 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddHostedService<RefreshTokenCleanupService>();
 
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()
+    ?? new[] { "http://localhost:5173" };
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowClient", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -164,6 +174,9 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await dbContext.Database.MigrateAsync();
+
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
@@ -192,6 +205,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.UseHttpsRedirection();
 app.UseCors("AllowClient");
