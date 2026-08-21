@@ -3,6 +3,7 @@ import { NavLink, Link } from 'react-router-dom'
 import { useAuth } from '../AuthContext'
 import { useLanguage } from '../LanguageContext'
 import HeaderSearch from './HeaderSearch'
+import ProfileMenu from './ProfileMenu'
 import logoIcon from '../assets/logo-icon.png'
 import { IconMenu, IconClose, IconHeart, IconBookmark, IconCheck, IconUser } from './icons'
 
@@ -17,13 +18,13 @@ function Header() {
 
   return (
     <header className="sticky top-0 z-30 bg-primary-dark/95 backdrop-blur border-b border-white/10 shadow-lg">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-4">
         <Link to="/" className="flex items-center gap-2 text-cream flex-shrink-0" onClick={() => setMenuOpen(false)}>
           <img src={logoIcon} alt="" className="h-9 w-9 object-contain" />
           <span className="text-2xl tracking-wide" style={{ fontFamily: 'var(--font-display)' }}>KisuVerse</span>
         </Link>
 
-        <div className="hidden md:block flex-1 max-w-sm">
+        <div className="hidden md:block flex-1 max-w-lg">
           <HeaderSearch />
         </div>
 
@@ -34,10 +35,7 @@ function Header() {
           <NavLink to="/coming-soon" className={navLinkClass}>{t('home.comingSoon')}</NavLink>
           {token ? (
             <>
-              <NavLink to="/watchlist" className={navLinkClass}><IconBookmark width={16} height={16} />{t('nav.watchlist')}</NavLink>
-              <NavLink to="/watched" className={navLinkClass}><IconCheck width={16} height={16} />{t('nav.watched')}</NavLink>
-              <NavLink to="/favorites" className={navLinkClass}><IconHeart width={16} height={16} />{t('nav.favorites')}</NavLink>
-              <NavLink to="/profile" className={navLinkClass}><IconUser width={16} height={16} />{t('nav.profile')}</NavLink>
+              <ProfileMenu />
               {isAdmin && (
                 <NavLink to="/admin" className={navLinkClass}>{t('nav.admin')}</NavLink>
               )}
