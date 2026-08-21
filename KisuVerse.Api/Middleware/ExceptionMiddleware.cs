@@ -37,9 +37,7 @@ public class ExceptionMiddleware
         var response = new
         {
             statusCode,
-            message = exception.Message,
-            // TEMPORARY diagnostic field - remove once the production seeding issue is root-caused.
-            innerException = exception.InnerException?.ToString()
+            message = exception.Message
         };
 
         await context.Response.WriteAsJsonAsync(response);

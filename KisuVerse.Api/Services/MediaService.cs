@@ -10,6 +10,7 @@ using System.Security.Principal;
 using KisuVerse.Api.Dtos.Review;
 using KisuVerse.Api.Dtos.Common;
 using KisuVerse.Api.Enums;
+using Npgsql;
 
 
 namespace KisuVerse.Api.Services;
@@ -160,9 +161,32 @@ public class MediaService : IMediaService
         _context.Media.Add(media);
         await AddGenres(media, detail.Genres);
         await AddPeople(media, credits);
-        await _context.SaveChangesAsync();
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (IsDuplicatePersonError(ex))
+        {
+            // A concurrent import already inserted one of the same cast/crew members.
+            // Drop this attempt and retry once so the People lookups see the committed row.
+            _context.ChangeTracker.Clear();
+
+            media = CreateMedia(detail, videos, userId);
+            _context.Media.Add(media);
+            await AddGenres(media, detail.Genres);
+            await AddPeople(media, credits);
+            await _context.SaveChangesAsync();
+        }
 
         return await GetMediaById(media.Id, userId);
+    }
+
+    private static bool IsDuplicatePersonError(DbUpdateException ex)
+    {
+        return ex.InnerException is PostgresException pgEx
+            && pgEx.SqlState == "23505"
+            && pgEx.ConstraintName == "IX_People_TmdbId";
     }
     private Media CreateMedia(TmdbMovieDetailDto detail, TmdbVideosDto videos, int userId)
     {
