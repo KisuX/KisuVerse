@@ -1,0 +1,9 @@
+KisuVerse.Client/
+KisuVerse.Api/bin/
+KisuVerse.Api/obj/
+KisuVerse.Api/appsettings.json
+KisuVerse.Api/appsettings.Development.json
+KisuVerse.Api/.vs/
+.git/
+.github/
+*.md
