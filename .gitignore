@@ -1,0 +1,36 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# Secrets (real values live only on disk, never committed)
+KisuVerse.Api/appsettings.json
+
+# Old standalone git history for KisuVerse.Api, kept locally only
+KisuVerse.Api/.git.backup/
+
+# Node / Vite
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Design source assets (not part of the app, kept local only)
+/Gemini_Generated_Image_n5r2zcn5r2zcn5r2-Photoroom.png
+/bg-kisuverse.png
+/logo.PNG

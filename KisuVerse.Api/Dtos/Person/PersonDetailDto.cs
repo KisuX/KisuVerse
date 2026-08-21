@@ -1,0 +1,15 @@
+namespace KisuVerse.Api.Dtos.Person;
+
+public class PersonDetailDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string? ProfileImagePath { get; set; }
+    public DateOnly? Birthday { get; set; }
+    public double Popularity { get; set; }
+    public string? Biography { get; set; }
+    public string? PlaceOfBirth { get; set; }
+    public DateOnly? DeathDay { get; set; }
+    public string? KnownForDepartment { get; set; }
+    public List<PersonMovieDto> Movies { get; set; } = new();
+}
